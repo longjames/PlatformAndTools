@@ -147,4 +147,59 @@ public class FenceServlet extends HttpServlet {
 		}
 	}
 
+	/**
+	 * @see HttpServlet#doPut(HttpServletRequest, HttpServletResponse)
+	 */
+	protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+	}
+
+	/**
+	 * @see HttpServlet#doDelete(HttpServletRequest, HttpServletResponse)
+	 */
+	protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		String id = request.getParameter("fence_id");
+		System.out.println("Fence_id(delete): "+id);
+		response.setContentType("text/x-json");
+		
+		PrintWriter out = response.getWriter();
+		Map<String, String> data = new HashMap<String, String>();
+		
+		if(id==null || id.equals(""))
+		{
+			data.put("code","200");
+			data.put("msg", "获取数据失败");
+			data.put("data", "");
+			out.println(JSONObject.fromObject(data).toString());
+			return;
+		}
+		
+		SessionFactory sf = new Configuration().configure().buildSessionFactory();
+		Session s = sf.openSession();
+	
+		try{
+			SQLQuery query = s.createSQLQuery("delete from fence where fence_id=?");
+			query.addEntity(Fence.class);
+			query.setParameter(0, id);
+			query.executeUpdate();
+			
+			data.put("code","100");
+			data.put("msg", "获取数据成功");
+			data.put("data", "");
+			
+			out.println(JSONObject.fromObject(data).toString());
+		}catch(Exception e)
+		{
+			data.put("code","200");
+			data.put("msg", "获取数据失败");
+			data.put("data", "");
+			e.printStackTrace();
+			out.println(JSONObject.fromObject(data).toString());
+		}finally
+		{
+			s.close();
+			sf.close();
+		}
+	}
 }

@@ -19,7 +19,6 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 
-import com.platform.model.Shouhuan;
 import com.platform.model.*;
 
 /**
@@ -133,6 +132,62 @@ public class ServiceServlet extends HttpServlet {
 			t.rollback();
 			data.put("code","200");
 			data.put("msg", "添加数据失败");
+			data.put("data", "");
+			e.printStackTrace();
+			out.println(JSONObject.fromObject(data).toString());
+		}finally
+		{
+			s.close();
+			sf.close();
+		}
+	}
+	
+	/**
+	 * @see HttpServlet#doPut(HttpServletRequest, HttpServletResponse)
+	 */
+	protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+	}
+
+	/**
+	 * @see HttpServlet#doDelete(HttpServletRequest, HttpServletResponse)
+	 */
+	protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		String id = request.getParameter("service_type");
+		System.out.println("Service_type(delete): "+id);
+		response.setContentType("text/x-json");
+		
+		PrintWriter out = response.getWriter();
+		Map<String, String> data = new HashMap<String, String>();
+		
+		if(id==null || id.equals(""))
+		{
+			data.put("code","200");
+			data.put("msg", "获取数据失败");
+			data.put("data", "");
+			out.println(JSONObject.fromObject(data).toString());
+			return;
+		}
+		
+		SessionFactory sf = new Configuration().configure().buildSessionFactory();
+		Session s = sf.openSession();
+	
+		try{
+			SQLQuery query = s.createSQLQuery("delete from service where service_type=?");
+			query.addEntity(Service.class);
+			query.setParameter(0, id);
+			query.executeUpdate();
+			
+			data.put("code","100");
+			data.put("msg", "获取数据成功");
+			data.put("data", "");
+			
+			out.println(JSONObject.fromObject(data).toString());
+		}catch(Exception e)
+		{
+			data.put("code","200");
+			data.put("msg", "获取数据失败");
 			data.put("data", "");
 			e.printStackTrace();
 			out.println(JSONObject.fromObject(data).toString());

@@ -10,8 +10,8 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.hibernate.Transaction;
 
+import org.hibernate.Transaction;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -41,7 +41,7 @@ public class ShouhuanServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		String id = request.getParameter("id");
+		String id = request.getParameter("shouhuan_id");
 		System.out.println("Shouhuan_id: "+id);
 		response.setContentType("text/x-json");
 		
@@ -152,4 +152,59 @@ public class ShouhuanServlet extends HttpServlet {
 		}
 	}
 
+	/**
+	 * @see HttpServlet#doPut(HttpServletRequest, HttpServletResponse)
+	 */
+	protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+	}
+
+	/**
+	 * @see HttpServlet#doDelete(HttpServletRequest, HttpServletResponse)
+	 */
+	protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		String id = request.getParameter("shouhuan_id");
+		System.out.println("Shouhuan(delete): "+id);
+		response.setContentType("text/x-json");
+		
+		PrintWriter out = response.getWriter();
+		Map<String, String> data = new HashMap<String, String>();
+		
+		if(id==null || id.equals(""))
+		{
+			data.put("code","200");
+			data.put("msg", "获取数据失败");
+			data.put("data", "");
+			out.println(JSONObject.fromObject(data).toString());
+			return;
+		}
+		
+		SessionFactory sf = new Configuration().configure().buildSessionFactory();
+		Session s = sf.openSession();
+	
+		try{
+			SQLQuery query = s.createSQLQuery("delete from shouhuan where shouhuan_id=?");
+			query.addEntity(Shouhuan.class);
+			query.setParameter(0, id);
+			query.executeUpdate();
+			
+			data.put("code","100");
+			data.put("msg", "获取数据成功");
+			data.put("data", "");
+			
+			out.println(JSONObject.fromObject(data).toString());
+		}catch(Exception e)
+		{
+			data.put("code","200");
+			data.put("msg", "获取数据失败");
+			data.put("data", "");
+			e.printStackTrace();
+			out.println(JSONObject.fromObject(data).toString());
+		}finally
+		{
+			s.close();
+			sf.close();
+		}
+	}
 }

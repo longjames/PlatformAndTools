@@ -24,7 +24,7 @@ import com.platform.model.*;
 /**
  * Servlet implementation class RelationServlet
  */
-@WebServlet("/RelationServlet")
+@WebServlet("/relation")
 public class RelationServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
@@ -135,6 +135,64 @@ public class RelationServlet extends HttpServlet {
 			t.rollback();
 			data.put("code","200");
 			data.put("msg", "添加数据失败");
+			data.put("data", "");
+			e.printStackTrace();
+			out.println(JSONObject.fromObject(data).toString());
+		}finally
+		{
+			s.close();
+			sf.close();
+		}
+	}
+	
+	/**
+	 * @see HttpServlet#doPut(HttpServletRequest, HttpServletResponse)
+	 */
+	protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+	}
+
+	/**
+	 * @see HttpServlet#doDelete(HttpServletRequest, HttpServletResponse)
+	 */
+	protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		String id = request.getParameter("user_id");
+		String shid = request.getParameter("shouhuan_id");
+		System.out.println("Relation(delete): "+id+ " "+shid);
+		response.setContentType("text/x-json");
+		
+		PrintWriter out = response.getWriter();
+		Map<String, String> data = new HashMap<String, String>();
+		
+		if(id==null || id.equals(""))
+		{
+			data.put("code","200");
+			data.put("msg", "获取数据失败");
+			data.put("data", "");
+			out.println(JSONObject.fromObject(data).toString());
+			return;
+		}
+		
+		SessionFactory sf = new Configuration().configure().buildSessionFactory();
+		Session s = sf.openSession();
+	
+		try{
+			SQLQuery query = s.createSQLQuery("delete from relation where user_id=? and shouhuan_id=?");
+			query.addEntity(Relation.class);
+			query.setParameter(0, id);
+			query.setParameter(1, shid);
+			query.executeUpdate();
+			
+			data.put("code","100");
+			data.put("msg", "获取数据成功");
+			data.put("data", "");
+			
+			out.println(JSONObject.fromObject(data).toString());
+		}catch(Exception e)
+		{
+			data.put("code","200");
+			data.put("msg", "获取数据失败");
 			data.put("data", "");
 			e.printStackTrace();
 			out.println(JSONObject.fromObject(data).toString());

@@ -24,7 +24,7 @@ import com.platform.model.*;
 /**
  * Servlet implementation class UserLogServlet
  */
-@WebServlet("/UserLogServlet")
+@WebServlet("/userlog")
 public class UserLogServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
@@ -156,6 +156,48 @@ public class UserLogServlet extends HttpServlet {
 	 */
 	protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
+		String id = request.getParameter("user_log_id");
+		System.out.println("User_log(delete): "+id);
+		response.setContentType("text/x-json");
+		
+		PrintWriter out = response.getWriter();
+		Map<String, String> data = new HashMap<String, String>();
+		
+		if(id==null || id.equals(""))
+		{
+			data.put("code","200");
+			data.put("msg", "获取数据失败");
+			data.put("data", "");
+			out.println(JSONObject.fromObject(data).toString());
+			return;
+		}
+		
+		SessionFactory sf = new Configuration().configure().buildSessionFactory();
+		Session s = sf.openSession();
+	
+		try{
+			SQLQuery query = s.createSQLQuery("delete from user_log where user_log_id=?");
+			query.addEntity(User_log.class);
+			query.setParameter(0, id);
+			query.executeUpdate();
+			
+			data.put("code","100");
+			data.put("msg", "获取数据成功");
+			data.put("data", "");
+			
+			out.println(JSONObject.fromObject(data).toString());
+		}catch(Exception e)
+		{
+			data.put("code","200");
+			data.put("msg", "获取数据失败");
+			data.put("data", "");
+			e.printStackTrace();
+			out.println(JSONObject.fromObject(data).toString());
+		}finally
+		{
+			s.close();
+			sf.close();
+		}
 	}
 
 }
