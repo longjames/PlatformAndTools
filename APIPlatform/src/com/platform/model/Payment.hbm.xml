@@ -4,13 +4,12 @@
         "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping package="com.platform.model">  
 	<class name="Payment" table="payment">
-		<composite-id>
-		<key-property name="shouhuan_id" type="java.lang.String"></key-property>
-		<key-property name="user_id" type="java.lang.String"></key-property>
-	    <key-property name="service_type" type="java.lang.Integer"></key-property>
-	    <key-property name="payment_id" type="java.lang.Integer"></key-property>
-	    <key-property name="begin_time" type="java.lang.String"></key-property>
-	    <key-property name="end_time" type="java.lang.String"></key-property>
-	    </composite-id>
+		<id name="payment_id" type="java.lang.Integer">
+		</id>
+		<property name="shouhuan_id" type="java.lang.String"></property>
+		<property name="user_id" type="java.lang.String"></property>
+	    <property name="service_type" type="java.lang.Integer"></property>
+	    <property name="begin_time" type="java.lang.String"></property>
+	    <property name="end_time" type="java.lang.String"></property>
 	</class>  
 </hibernate-mapping>  
