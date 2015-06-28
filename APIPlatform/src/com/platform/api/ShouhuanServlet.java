@@ -182,12 +182,14 @@ public class ShouhuanServlet extends HttpServlet {
 		
 		SessionFactory sf = new Configuration().configure().buildSessionFactory();
 		Session s = sf.openSession();
-	
+		Transaction t = s.beginTransaction();
+		
 		try{
 			SQLQuery query = s.createSQLQuery("delete from shouhuan where shouhuan_id=?");
 			query.addEntity(Shouhuan.class);
 			query.setParameter(0, id);
 			query.executeUpdate();
+			t.commit();
 			
 			data.put("code","100");
 			data.put("msg", "获取数据成功");

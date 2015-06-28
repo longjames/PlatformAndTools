@@ -174,12 +174,14 @@ public class UserLogServlet extends HttpServlet {
 		
 		SessionFactory sf = new Configuration().configure().buildSessionFactory();
 		Session s = sf.openSession();
+		Transaction t = s.beginTransaction();
 	
 		try{
 			SQLQuery query = s.createSQLQuery("delete from user_log where user_log_id=?");
 			query.addEntity(User_log.class);
 			query.setParameter(0, id);
 			query.executeUpdate();
+			t.commit();
 			
 			data.put("code","100");
 			data.put("msg", "获取数据成功");
